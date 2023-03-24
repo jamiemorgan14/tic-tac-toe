@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.css'
 
-function App() {
+// TODO: make board expandable like 3x3, 4x4, 5x10
+export default function Board() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      {BoardRow(1)}
+      {BoardRow(4)}
+      {BoardRow(7)}
+    </>
+  )
 }
 
-export default App;
+function BoardRow(num) {
+  return (
+    <div className="board-row">
+      {Square(num)}
+      {Square(num + 1)}
+      {Square(num + 2)}
+    </div>
+  )
+}
+
+function Square(num) {
+  return <button className="square">{num}</button>
+}
