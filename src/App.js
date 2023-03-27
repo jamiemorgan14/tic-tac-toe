@@ -14,6 +14,9 @@ export default function Game() {
   }
 
   function jumpTo(nextMove) {
+    if (nextMove === 0) {
+      setHistory([Array(9).fill(null)])
+    }
     setCurrentMove(nextMove);
   }
 
@@ -24,11 +27,18 @@ export default function Game() {
     } else {
       description = 'Go to game start'
     }
-    return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
-      </li>
-    )
+
+    if (move === currentMove) {
+      return (
+        <li key={'current-move'}>{calculateWinner(squares) ? 'Game Over' : `You are at move #${move}`}</li>
+      )
+    } else {
+      return (
+        <li key={move}>
+          <button onClick={() => jumpTo(move)}>{description}</button>
+        </li>
+      )
+    }
   });
 
   return (
@@ -37,7 +47,7 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className='game-info'>
-        <ol>{moves}</ol>
+        <ul>{moves}</ul>
       </div>
     </div>
   )
