@@ -1,21 +1,58 @@
 import './App.css'
 import { useState } from 'react';
 
-// TODO: make board expandable like 3x3, 4x4, 5x10
-export default function Board() {
-  const [xIsNext, setXIsNext] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [currentMove, setCurrentMove] = useState(0);
+  const xIsNext = currentMove % 2 === 0;
+  const currentSquares = history[currentMove];
 
+  function handlePlay(nextSquares) {
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+  function jumpTo(nextMove) {
+    setCurrentMove(nextMove);
+  }
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = `Go to move #${move}`
+    } else {
+      description = 'Go to game start'
+    }
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    )
+  });
+
+  return (
+    <div className='game'>
+      <div className='game-board'>
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className='game-info'>
+        <ol>{moves}</ol>
+      </div>
+    </div>
+  )
+}
+
+// TODO: make board expandable like 3x3, 4x4, 5x10
+function Board({ xIsNext, squares, onPlay }) {
   function handleClick(square) {
     if (squares[square]) return;
     if (squares[square] || calculateWinner(squares)) {
-      console.log('winner is ', square);
       return;
     }
     const nextSquares = squares.slice();
     nextSquares[square] = xIsNext ? 'X' : 'O';
-    setXIsNext(!xIsNext);
-    setSquares(nextSquares);
+    onPlay(nextSquares);
   }
 
   const winner = calculateWinner(squares);
